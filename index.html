@@ -1859,10 +1859,10 @@ function generateCombination(difficulty) {
     const answer = total - bad;
 
     return {
-      question: `From ${n} scholars, how many committees of ${r} can be formed if ${a} and ${b} cannot both be selected?`,
+      question: `From ${n} scholars, how many committees of ${r} can be formed if ${a} and ${b} cannot be selected together?`,
       answer,
       steps: [
-        `Use subtraction: total committees minus committees where both ${a} and ${b} are selected.`,
+        `Use subtraction: total committees minus committees where both ${a} and ${b} are selected together.`,
         `Total committees = ${n}C${r} = ${total.toLocaleString()}.`,
         `Bad case: ${a} and ${b} are already chosen, so choose the remaining ${r - 2} members from the other ${n - 2} scholars.`,
         `Bad = ${n - 2}C${r - 2} = ${bad.toLocaleString()}.`,
