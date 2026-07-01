@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Combinatorics Arena I</title>
+
+  <style>
+:root {
+  --bg: #09070f;
+  --card: #15121f;
+  --card2: #1d1829;
+
+  --violet: #a855f7;
+  --violet2: #7c3aed;
+  --violet3: #c084fc;
+
+  --text: #f7f7fb;
+  --muted: #b9b3c7;
+  --danger: #ff4d6d;
+  --green: #35d07f;
+  --line: rgba(255, 255, 255, 0.12);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(168, 85, 247, 0.22), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.16), transparent 35%),
+    radial-gradient(circle at center, rgba(192, 132, 252, 0.05), transparent 45%),
+    var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app {
+  width: min(1000px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.brand-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--violet3), var(--violet));
+  color: #12091f;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.22);
+}
+
+.brand-pill.ghost {
+  background: transparent;
+  color: var(--violet3);
+  border: 1px solid rgba(192, 132, 252, 0.55);
+  box-shadow: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(2.3rem, 6vw, 4.7rem);
+  line-height: 0.95;
+  margin-bottom: 10px;
+  letter-spacing: -0.06em;
+  text-shadow: 0 0 30px rgba(168, 85, 247, 0.22);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)),
+    var(--card);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: var(--shadow);
+}
+
+.section-kicker {
+  color: var(--violet3);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.setup-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.mode-count {
+  background: rgba(168, 85, 247, 0.13);
+  border: 1px solid rgba(192, 132, 252, 0.34);
+  color: var(--violet3);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.mode-btn {
+  border: 1px solid var(--line);
+  background: var(--card2);
+  color: var(--text);
+  text-align: left;
+  border-radius: 20px;
+  padding: 18px;
+  cursor: pointer;
+  min-height: 110px;
+  font-weight: 900;
+  transition: 0.18s ease;
+}
+
+.mode-btn span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+.mode-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(192, 132, 252, 0.55);
+  box-shadow: 0 0 28px rgba(168, 85, 247, 0.12);
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, var(--violet3), var(--violet2));
+  color: #12091f;
+  border-color: transparent;
+  box-shadow: 0 0 32px rgba(168, 85, 247, 0.25);
+}
+
+.mode-btn.active span {
+  color: rgba(18, 9, 31, 0.78);
+}
+
+.mode-btn.wide {
+  grid-column: 1 / -1;
+}
+
+.setup-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+label {
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+select,
+input {
+  width: 100%;
+  margin-top: 8px;
+  background: #0f0b17;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  border-color: rgba(192, 132, 252, 0.8);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.16);
+}
+
+.rules-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: rgba(168, 85, 247, 0.09);
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  border-radius: 18px;
+  padding: 14px 16px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.rules-box strong {
+  color: var(--violet3);
+}
+
+.rules-box span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.rules-box span::before {
+  content: "•";
+  color: var(--violet3);
+  margin-right: 8px;
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+  border: 0;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-weight: 950;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--violet3), var(--violet2));
+  color: #12091f;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.18);
+}
+
+.secondary-btn {
+  background: #292431;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.danger-btn {
+  background: rgba(255, 77, 109, 0.14);
+  color: #ff8fa3;
+  border: 1px solid rgba(255, 77, 109, 0.35);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.danger-btn:hover {
+  transform: translateY(-2px);
+}
+
+.game-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.game-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.score-pill {
+  background: rgba(168, 85, 247, 0.13);
+  border: 1px solid rgba(192, 132, 252, 0.34);
+  color: var(--violet3);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.timer-pill {
+  color: var(--violet3);
+}
+
+.error-pill {
+  color: #ff8fa3;
+  border-color: rgba(255, 77, 109, 0.38);
+  background: rgba(255, 77, 109, 0.1);
+}
+
+.problem-box {
+  background: #0f0b17;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.problem-box p {
+  margin: 0;
+  line-height: 1.65;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 800;
+}
+
+.answer-area {
+  margin-bottom: 18px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.feedback {
+  padding: 16px 18px;
+  border-radius: 18px;
+  margin-bottom: 18px;
+  font-weight: 950;
+  line-height: 1.5;
+}
+
+.feedback.correct {
+  color: var(--green);
+  background: rgba(53, 208, 127, 0.12);
+  border: 1px solid rgba(53, 208, 127, 0.35);
+}
+
+.feedback.wrong {
+  color: #ff8fa3;
+  background: rgba(255, 77, 109, 0.12);
+  border: 1px solid rgba(255, 77, 109, 0.35);
+}
+
+.solution-box {
+  background: #0f0b17;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.solution-box h3 {
+  color: var(--violet3);
+  margin-bottom: 12px;
+}
+
+.solution-box ol {
+  padding-left: 22px;
+  margin: 0;
+}
+
+.solution-box li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+  color: #ece7f7;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#nextBtn {
+  margin-left: auto;
+}
+
+.solution-method-title {
+  color: var(--violet3);
+  font-weight: 950;
+  font-size: 1rem;
+  margin: 18px 0 10px;
+}
+
+.solution-method-title:first-child {
+  margin-top: 0;
+}
+
+.solution-list {
+  padding-left: 22px;
+  margin: 0 0 16px;
+}
+
+.solution-list li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+/* RESULT / CLOSING WALL */
+
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at center, rgba(168, 85, 247, 0.30), rgba(0, 0, 0, 0.9) 58%),
+    rgba(0, 0, 0, 0.9);
+  animation: overlayFlash 0.45s ease;
+}
+
+.result-overlay.hidden {
+  display: none !important;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 680px;
+  text-align: center;
+  padding: 36px;
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(21, 18, 31, 0.96);
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  box-shadow:
+    0 0 55px rgba(168, 85, 247, 0.35),
+    0 30px 90px rgba(0, 0, 0, 0.68);
+  animation: resultPop 0.45s ease;
+}
+
+.result-kicker {
+  margin: 0 0 10px;
+  color: var(--violet3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 950;
+  font-size: 13px;
+}
+
+.result-card h2 {
+  margin: 0;
+  font-size: clamp(42px, 8vw, 76px);
+  line-height: 0.9;
+  color: white;
+  letter-spacing: -0.06em;
+  text-shadow: 0 0 28px rgba(168, 85, 247, 0.5);
+}
+
+.result-reason {
+  margin: 20px auto 12px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.result-main-line {
+  display: block;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 950;
+  margin-bottom: 10px;
+  line-height: 1.12;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
+}
+
+.result-sub-line {
+  display: block;
+  color: #ff8fa3;
+  font-size: clamp(16px, 2.6vw, 22px);
+  font-weight: 950;
+  line-height: 1.35;
+  text-shadow:
+    0 0 10px rgba(255, 77, 109, 0.45),
+    0 0 24px rgba(255, 77, 109, 0.2);
+}
+
+.final-modes {
+  margin: 16px auto 24px;
+  max-width: 580px;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: clamp(14px, 2.2vw, 18px);
+  line-height: 1.45;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.result-grid div {
+  padding: 20px 14px;
+  border-radius: 22px;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(192, 132, 252, 0.18);
+}
+
+.result-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+.result-grid strong {
+  display: block;
+  font-size: 36px;
+  color: white;
+}
+
+.result-card #restartBtn {
+  width: 100%;
+  padding: 17px 24px;
+  font-size: 18px;
+}
+
+@keyframes overlayFlash {
+  0% {
+    opacity: 0;
+    filter: brightness(1.8);
+  }
+
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes resultPop {
+  0% {
+    transform: scale(0.82) translateY(24px);
+    opacity: 0;
+  }
+
+  70% {
+    transform: scale(1.04) translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .app {
+    width: min(100% - 20px, 1000px);
+    padding: 20px 0;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .setup-title-row {
+    flex-direction: column;
+  }
+
+  .mode-grid,
+  .setup-row {
+    grid-template-columns: 1fr;
+  }
+
+  .game-top {
+    flex-direction: column;
+  }
+
+  .game-stats {
+    justify-content: flex-start;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  #nextBtn {
+    margin-left: 0;
+  }
+
+  .result-card {
+    padding: 28px 20px;
+  }
+
+  .result-card h2 {
+    font-size: clamp(40px, 13vw, 58px);
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-main-line {
+    font-size: 23px;
+  }
+
+  .result-sub-line {
+    font-size: 17px;
+  }
+}
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="brand-row">
+      <span class="brand-pill">HULAGPOS UPCAT-AUDD</span>
+      <span class="brand-pill ghost">FCP · PERMUTATION · COMBINATION</span>
+    </div>
+
+    <h1>COMBINATORICS ARENA I</h1>
+    <p class="subtitle">
+      Fundamental Counting Principle, Permutation, Combination
+    </p>
+  </header>
+
+  <main>
+    <!-- SETUP -->
+    <section class="card setup-card" id="setupScreen">
+      <div class="section-kicker">SETUP</div>
+
+      <div class="setup-title-row">
+        <div>
+          <h2>Pumili ng Bakbakan</h2>
+          <p class="muted">
+            Choose one or more modes. The app will rotate problems from your selected modes until time runs out,
+            you quit, or you make 2 consecutive errors.
+          </p>
+        </div>
+
+        <div class="mode-count" id="selectedModeCount">1 selected</div>
+      </div>
+
+      <div class="mode-grid">
+        <button class="mode-btn active" data-mode="linear" type="button">
+          Linear Permutation
+          <span>Hallway / row arrangements</span>
+        </button>
+
+        <button class="mode-btn" data-mode="circular" type="button">
+          Circular Permutation
+          <span>Round table arrangements</span>
+        </button>
+
+        <button class="mode-btn" data-mode="fcp" type="button">
+          FCP
+          <span>Fundamental Counting Principle</span>
+        </button>
+
+        <button class="mode-btn" data-mode="combination" type="button">
+          Combination
+          <span>Choose groups / committees</span>
+        </button>
+
+        <button class="mode-btn wide" data-mode="quick" type="button">
+          Direct Computation
+          <span>Direct 8P3, 7C2, 10P4, etc.</span>
+        </button>
+      </div>
+
+      <div class="setup-row">
+        <label>
+          Timer Mode
+          <select id="timerMode">
+            <option value="timed" selected>Timed</option>
+            <option value="untimed">Untimed</option>
+            <option value="perQuestion">Per Question Timer</option>
+          </select>
+        </label>
+
+        <label id="maxTimeWrap">
+          Max Time in Minutes
+          <input
+            id="maxTime"
+            type="number"
+            min="1"
+            max="180"
+            value="10"
+            step="1"
+            placeholder="Enter minutes"
+          />
+        </label>
+
+        <label>
+          Difficulty
+          <select id="difficulty">
+            <option value="basic">Basic</option>
+            <option value="mixed" selected>Mixed</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="rules-box">
+        <strong>Rules:</strong>
+        <span>Correct answer resets errors.</span>
+        <span>Wrong answer = 1 error.</span>
+        <span>Timed mode uses your custom max time.</span>
+        <span>Per Question Timer gives 90 seconds per item.</span>
+        <span>Timeout = 1 error and auto-next.</span>
+        <span>2 consecutive errors = Game Over.</span>
+      </div>
+
+      <button class="primary-btn" id="startBtn" type="button">
+        Start Bakbakan
+      </button>
+    </section>
+
+    <!-- GAME -->
+    <section class="card game-card hidden" id="gameScreen">
+      <div class="game-top">
+        <div>
+          <div class="section-kicker" id="modeLabel">LINEAR PERMUTATION</div>
+          <h2 id="questionTitle">Question 1</h2>
+        </div>
+
+        <div class="game-stats">
+          <div class="score-pill">
+            <span id="progressText">Question 1</span>
+          </div>
+
+          <div class="score-pill timer-pill">
+            <span id="timerText">10:00</span>
+          </div>
+
+          <div class="score-pill error-pill">
+            <span id="errorText">Errors: 0 / 2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem-box">
+        <p id="problemText"></p>
+      </div>
+
+      <div class="answer-area">
+        <label for="answerInput">Final Answer</label>
+        <input
+          id="answerInput"
+          type="number"
+          placeholder="Type your answer here"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="actions">
+        <button class="primary-btn" id="checkBtn" type="button">Check</button>
+        <button class="secondary-btn" id="showBtn" type="button">Show Solution</button>
+        <button class="danger-btn" id="quitBtn" type="button">Quit</button>
+
+        <button class="primary-btn hidden" id="nextBtn" type="button">
+          Next Question
+        </button>
+      </div>
+
+      <div class="feedback hidden" id="feedbackBox"></div>
+
+      <div class="solution-box hidden" id="solutionBox">
+        <h3>Solving</h3>
+        <div id="solutionSteps"></div>
+      </div>
+    </section>
+
+    <!-- END / CLOSING WALL -->
+    <section class="result-overlay hidden" id="endScreen">
+      <div class="result-card">
+        <p class="result-kicker">Round Summary</p>
+
+        <h2 id="resultTitle">ROUND ENDED!</h2>
+
+        <p class="result-reason" id="finalMessage">
+          Bakbakan complete.
+        </p>
+
+        <p class="final-modes" id="finalModes">
+          Bakbakan: —
+        </p>
+
+        <div class="result-grid">
+          <div>
+            <span>Correct</span>
+            <strong id="finalScore">0</strong>
+          </div>
+
+          <div>
+            <span>Total Questions</span>
+            <strong id="finalAttempted">0</strong>
+          </div>
+
+          <div>
+            <span>Timer</span>
+            <strong id="finalTimer">0:00</strong>
+          </div>
+        </div>
+
+        <button class="primary-btn" id="restartBtn" type="button">
+          Play Again
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+  <script>
+const setupScreen = document.getElementById("setupScreen");
+const gameScreen = document.getElementById("gameScreen");
+const endScreen = document.getElementById("endScreen");
+
+const modeButtons = document.querySelectorAll(".mode-btn");
+const selectedModeCount = document.getElementById("selectedModeCount");
+
+const startBtn = document.getElementById("startBtn");
+const checkBtn = document.getElementById("checkBtn");
+const showBtn = document.getElementById("showBtn");
+const quitBtn = document.getElementById("quitBtn");
+const nextBtn = document.getElementById("nextBtn");
+const restartBtn = document.getElementById("restartBtn");
+
+const timerModeEl = document.getElementById("timerMode");
+const maxTimeEl = document.getElementById("maxTime");
+const maxTimeWrap = document.getElementById("maxTimeWrap");
+const difficultyEl = document.getElementById("difficulty");
+
+const modeLabel = document.getElementById("modeLabel");
+const questionTitle = document.getElementById("questionTitle");
+const progressText = document.getElementById("progressText");
+const timerText = document.getElementById("timerText");
+const errorText = document.getElementById("errorText");
+
+const problemText = document.getElementById("problemText");
+const answerInput = document.getElementById("answerInput");
+const feedbackBox = document.getElementById("feedbackBox");
+const solutionBox = document.getElementById("solutionBox");
+const solutionSteps = document.getElementById("solutionSteps");
+
+const finalScore = document.getElementById("finalScore");
+const finalMessage = document.getElementById("finalMessage");
+const resultTitle = document.getElementById("resultTitle");
+const finalAttempted = document.getElementById("finalAttempted");
+const finalModes = document.getElementById("finalModes");
+const finalTimer = document.getElementById("finalTimer");
+
+let selectedModes = ["linear"];
+let timerMode = "timed";
+
+let currentIndex = 0;
+let score = 0;
+let attempted = 0;
+let consecutiveErrors = 0;
+
+let currentProblem = null;
+let currentQuestionMode = "linear";
+let answered = false;
+let gameActive = false;
+
+let globalTimeLeft = 600;
+let questionTimeLeft = 90;
+let timerInterval = null;
+
+const QUESTION_TIME_LIMIT = 90;
+
+const names = [
+  "Rollic", "Adrian", "Aldrin", "Cedie", "Prince", "Lance",
+  "Allaena", "Angeli", "Anthony", "Celine", "Charles", "Christel",
+  "Clive", "Cyprus", "Elisha", "Elton", "Gav", "Ian", "Jiarei",
+  "JC", "Joshua", "Kathrine", "Lee", "Leewella", "Leona", "Jonae",
+  "Lorcan", "Josephine", "Blessy", "Mardion", "Marga", "Kyle",
+  "Carms", "Mark CJ", "Martina", "Mary", "Mhelanie", "Nico",
+  "Nova", "Red", "Rexter", "Roniel", "Roselyn", "Rye",
+  "Shialla", "Sid", "SirJohnix", "Sophia", "Terrence", "Tyrone",
+  "Vin", "Yvie"
+];
+
+/* =========================
+   SETUP CONTROLS
+========================= */
+
+modeButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const mode = btn.dataset.mode;
+
+    if (selectedModes.includes(mode)) {
+      if (selectedModes.length === 1) {
+        showSetupWarning("Need 1 mode.");
+        return;
+      }
+
+      selectedModes = selectedModes.filter((m) => m !== mode);
+      btn.classList.remove("active");
+    } else {
+      selectedModes.push(mode);
+      btn.classList.add("active");
+    }
+
+    updateSelectedModeCount();
+  });
+});
+
+timerModeEl.addEventListener("change", () => {
+  timerMode = timerModeEl.value;
+
+  if (timerMode === "timed") {
+    maxTimeWrap.classList.remove("hidden");
+  } else {
+    maxTimeWrap.classList.add("hidden");
+  }
+
+  updateTimerText();
+});
+
+startBtn.addEventListener("click", startGame);
+checkBtn.addEventListener("click", checkAnswer);
+showBtn.addEventListener("click", revealSolution);
+nextBtn.addEventListener("click", nextQuestion);
+quitBtn.addEventListener("click", () => endGame("quit"));
+
+restartBtn.addEventListener("click", () => {
+  stopTimer();
+
+  endScreen.classList.add("hidden");
+  setupScreen.classList.remove("hidden");
+
+  updateSelectedModeCount();
+});
+
+answerInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    if (!answered) checkAnswer();
+    else nextQuestion();
+  }
+});
+
+updateSelectedModeCount();
+
+/* =========================
+   GAME FLOW
+========================= */
+
+function startGame() {
+  timerMode = timerModeEl.value;
+
+  currentIndex = 0;
+  score = 0;
+  attempted = 0;
+  consecutiveErrors = 0;
+
+  currentProblem = null;
+  currentQuestionMode = "linear";
+  answered = false;
+  gameActive = true;
+
+  globalTimeLeft = Math.max(1, Number(maxTimeEl.value || 10)) * 60;
+  questionTimeLeft = QUESTION_TIME_LIMIT;
+
+  setupScreen.classList.add("hidden");
+  endScreen.classList.add("hidden");
+  gameScreen.classList.remove("hidden");
+
+  updateErrorText();
+  updateTimerText();
+
+  startTimer();
+  nextQuestion();
+}
+
+function nextQuestion() {
+  if (!gameActive) return;
+
+  answered = false;
+  currentIndex++;
+
+  currentQuestionMode = pick(selectedModes);
+  currentProblem = generateProblem(currentQuestionMode, difficultyEl.value);
+
+  if (timerMode === "perQuestion") {
+    questionTimeLeft = QUESTION_TIME_LIMIT;
+    updateTimerText();
+  }
+
+  modeLabel.textContent = getModeName(currentQuestionMode);
+  questionTitle.textContent = `Question ${currentIndex}`;
+  progressText.textContent = `Question ${currentIndex}`;
+  problemText.textContent = currentProblem.question;
+
+  answerInput.value = "";
+  answerInput.disabled = false;
+  answerInput.focus();
+
+  feedbackBox.className = "feedback hidden";
+  feedbackBox.textContent = "";
+
+  solutionBox.classList.add("hidden");
+  solutionSteps.innerHTML = "";
+
+  nextBtn.classList.add("hidden");
+  checkBtn.disabled = false;
+
+  updateErrorText();
+}
+
+function checkAnswer() {
+  if (!gameActive || answered) return;
+
+  if (answerInput.value.trim() === "") {
+    feedbackBox.className = "feedback wrong";
+    feedbackBox.textContent = "Kulang! Type your final answer first.";
+    return;
+  }
+
+  const userAnswer = Number(answerInput.value);
+
+  answered = true;
+  attempted++;
+
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  nextBtn.classList.remove("hidden");
+
+  if (userAnswer === currentProblem.answer) {
+    score++;
+    consecutiveErrors = 0;
+
+    feedbackBox.className = "feedback correct";
+    feedbackBox.textContent = `Correct! Answer: ${currentProblem.answer.toLocaleString()}`;
+  } else {
+    consecutiveErrors++;
+
+    feedbackBox.className = "feedback wrong";
+    feedbackBox.textContent = `Incorrect. Your answer: ${userAnswer.toLocaleString()} | Correct answer: ${currentProblem.answer.toLocaleString()}`;
+  }
+
+  updateErrorText();
+  showSolution();
+
+  if (consecutiveErrors >= 2) {
+    setTimeout(() => {
+      endGame("errors");
+    }, 900);
+  }
+}
+
+function showSolution() {
+  if (!currentProblem) return;
+
+  solutionBox.classList.remove("hidden");
+
+  let html = "";
+  let listOpen = false;
+
+  currentProblem.steps.forEach((step) => {
+    const isHeading = step.includes("<strong>");
+
+    if (isHeading) {
+      if (listOpen) {
+        html += "</ol>";
+        listOpen = false;
+      }
+
+      html += `<div class="solution-method-title">${step}</div>`;
+    } else {
+      if (!listOpen) {
+        html += `<ol class="solution-list">`;
+        listOpen = true;
+      }
+
+      html += `<li>${step}</li>`;
+    }
+  });
+
+  if (listOpen) {
+    html += "</ol>";
+  }
+
+  solutionSteps.innerHTML = html;
+}
+
+function revealSolution() {
+  if (!gameActive || !currentProblem) return;
+
+  showSolution();
+
+  if (!answered) {
+    answered = true;
+    attempted++;
+    consecutiveErrors++;
+
+    answerInput.disabled = true;
+    checkBtn.disabled = true;
+    nextBtn.classList.remove("hidden");
+
+    feedbackBox.className = "feedback wrong";
+    feedbackBox.textContent = `Solution revealed. This counts as 1 error. Correct answer: ${currentProblem.answer.toLocaleString()}`;
+
+    updateErrorText();
+
+    if (consecutiveErrors >= 2) {
+      setTimeout(() => {
+        endGame("errors");
+      }, 900);
+    }
+  }
+}
+
+/* =========================
+   TIMER
+========================= */
+
+function startTimer() {
+  stopTimer();
+
+  timerInterval = setInterval(() => {
+    if (!gameActive) return;
+
+    if (timerMode === "untimed") {
+      timerText.textContent = "Untimed";
+      return;
+    }
+
+    if (timerMode === "timed") {
+      globalTimeLeft--;
+      updateTimerText();
+
+      if (globalTimeLeft <= 0) {
+        endGame("time");
+      }
+
+      return;
+    }
+
+    if (timerMode === "perQuestion") {
+      if (answered) return;
+
+      questionTimeLeft--;
+      updateTimerText();
+
+      if (questionTimeLeft <= 0) {
+        handleQuestionExpired();
+      }
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function handleQuestionExpired() {
+  if (!gameActive || answered) return;
+
+  answered = true;
+  attempted++;
+  consecutiveErrors++;
+
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  nextBtn.classList.add("hidden");
+
+  feedbackBox.className = "feedback wrong";
+  feedbackBox.textContent = `Time's up! This counts as 1 error. Correct answer: ${currentProblem.answer.toLocaleString()}`;
+
+  updateErrorText();
+  showSolution();
+
+  if (consecutiveErrors >= 2) {
+    setTimeout(() => {
+      endGame("errors");
+    }, 900);
+    return;
+  }
+
+  setTimeout(() => {
+    nextQuestion();
+  }, 1400);
+}
+
+function updateTimerText() {
+  if (!timerText) return;
+
+  if (timerMode === "untimed") {
+    timerText.textContent = "Untimed";
+    return;
+  }
+
+  if (timerMode === "timed") {
+    timerText.textContent = formatTime(globalTimeLeft);
+    return;
+  }
+
+  if (timerMode === "perQuestion") {
+    timerText.textContent = formatTime(questionTimeLeft);
+  }
+}
+
+function formatTime(seconds) {
+  const safeSeconds = Math.max(0, seconds);
+  const mins = Math.floor(safeSeconds / 60);
+  const secs = safeSeconds % 60;
+
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
+/* =========================
+   UI HELPERS
+========================= */
+
+function updateErrorText() {
+  errorText.textContent = `Errors: ${consecutiveErrors} / 2`;
+}
+
+function updateSelectedModeCount() {
+  if (!selectedModeCount) return;
+  selectedModeCount.textContent = `${selectedModes.length} selected`;
+}
+
+function showSetupWarning(message) {
+  if (!selectedModeCount) return;
+
+  selectedModeCount.textContent = message;
+
+  setTimeout(() => {
+    updateSelectedModeCount();
+  }, 1200);
+}
+
+function endGame(reason = "done") {
+  gameActive = false;
+  stopTimer();
+
+  gameScreen.classList.add("hidden");
+  endScreen.classList.remove("hidden");
+
+  const modeNames = selectedModes.map((mode) => getModeName(mode)).join(", ");
+
+  const timerLabel =
+    timerMode === "timed"
+      ? `Timed: ${formatTime(Math.max(1, Number(maxTimeEl.value || 10)) * 60)}`
+      : timerMode === "untimed"
+        ? "Untimed"
+        : `Per Question Timer: ${formatTime(QUESTION_TIME_LIMIT)} per item`;
+
+  finalScore.textContent = score;
+  finalAttempted.textContent = attempted;
+
+  if (finalTimer) {
+    if (timerMode === "timed") {
+      const totalSeconds = Math.max(1, Number(maxTimeEl.value || 10)) * 60;
+      const usedSeconds = Math.max(0, totalSeconds - globalTimeLeft);
+      finalTimer.textContent = formatTime(usedSeconds);
+    } else if (timerMode === "perQuestion") {
+      finalTimer.textContent = "1:30/item";
+    } else {
+      finalTimer.textContent = "∞";
+    }
+  }
+
+  if (finalModes) {
+    finalModes.textContent = `Bakbakan: ${modeNames} | Mode: ${timerLabel}`;
+  }
+
+  if (reason === "errors") {
+    resultTitle.textContent = "GAME OVER!";
+    finalMessage.innerHTML = `
+      <span class="result-main-line">2 Consecutive Errors</span>
+      <span class="result-sub-line">Score: ${score} correct out of ${attempted} answered.</span>
+    `;
+  } else if (reason === "time") {
+    resultTitle.textContent = "TIME IS UP!";
+    finalMessage.innerHTML = `
+      <span class="result-main-line">Naubos ang Oras</span>
+      <span class="result-sub-line">Score: ${score} correct out of ${attempted} answered.</span>
+    `;
+  } else if (reason === "quit") {
+    resultTitle.textContent = "ROUND ENDED!";
+    finalMessage.innerHTML = `
+      <span class="result-main-line">You quit the bakbakan.</span>
+      <span class="result-sub-line">Score: ${score} correct out of ${attempted} answered.</span>
+    `;
+  } else {
+    resultTitle.textContent = "BAKBAKAN COMPLETE!";
+    finalMessage.innerHTML = `
+      <span class="result-main-line">Solid run.</span>
+      <span class="result-sub-line">Score: ${score} correct out of ${attempted} answered.</span>
+    `;
+  }
+}
+
+function getModeName(mode) {
+  const map = {
+    linear: "LINEAR PERMUTATION",
+    circular: "CIRCULAR PERMUTATION",
+    fcp: "FUNDAMENTAL COUNTING PRINCIPLE",
+    combination: "COMBINATION",
+    quick: "DIRECT COMPUTATION"
+  };
+
+  return map[mode] || "COUNTING ARENA";
+}
+
+/* =========================
+   GENERATORS
+========================= */
+
+function generateProblem(mode, difficulty) {
+  if (mode === "linear") return generateLinear(difficulty);
+  if (mode === "circular") return generateCircular(difficulty);
+  if (mode === "fcp") return generateFCP(difficulty);
+  if (mode === "combination") return generateCombination(difficulty);
+  if (mode === "quick") return generateQuick(difficulty);
+
+  return generateLinear(difficulty);
+}
+
+/* =========================
+   LINEAR PERMUTATION
+========================= */
+
+function generateLinear(difficulty) {
+  const basicCases = [
+    "all",
+    "pairTogether",
+    "threeTogether",
+    "fourTogether"
+  ];
+
+  const mixedCases = [
+    "all",
+    "pairTogether",
+    "threeTogether",
+    "fourTogether",
+    "pairNotTogether",
+    "twoPairsTogether"
+  ];
+
+  const hardCases = [
+    "pairNotTogether",
+    "threeNotAllTogether",
+    "pairTogetherOneAvoids",
+    "twoPairsTogether"
+  ];
+
+  const pool = difficulty === "basic" ? basicCases : difficulty === "hard" ? hardCases : mixedCases;
+  const type = pick(pool);
+
+  const minPeople = {
+    all: 3,
+    pairTogether: 3,
+    threeTogether: 3,
+    fourTogether: 4,
+    pairNotTogether: 3,
+    twoPairsTogether: 4,
+    threeNotAllTogether: 4,
+    pairTogetherOneAvoids: 4
+  };
+
+  const n = rand(minPeople[type], 10);
+
+  if (type === "all") {
+    const answer = fact(n);
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway?`,
+      answer,
+      steps: [
+        `This is a linear arrangement of ${n} distinct people.`,
+        `For a row or hallway arrangement, use ${n}!.`,
+        `${n}! = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "pairTogether") {
+    const [a, b] = pickNames(2);
+    const answer = fact(n - 1) * fact(2);
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway such that ${a} and ${b} want to sit next to each other?`,
+      answer,
+      steps: [
+        `Treat ${a} and ${b} as one block.`,
+        `The number of outside objects is now ${n - 1}: the block plus the other ${n - 2} people.`,
+        `Arrange the outside objects: (${n - 1})! = ${fact(n - 1).toLocaleString()}.`,
+        `Arrange the people inside the block: 2! = 2.`,
+        `Total = (${n - 1})! × 2! = ${fact(n - 1).toLocaleString()} × 2 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "threeTogether") {
+    const group = pickNames(3);
+    const answer = fact(n - 2) * fact(3);
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway such that ${formatNames(group)} want to sit next to each other?`,
+      answer,
+      steps: [
+        `Treat ${formatNames(group)} as one block.`,
+        `Outside objects: 1 block + ${n - 3} other people = ${n - 2} objects.`,
+        `Arrange outside objects: (${n - 2})! = ${fact(n - 2).toLocaleString()}.`,
+        `Arrange inside the block: 3! = 6.`,
+        `Total = (${n - 2})! × 3! = ${fact(n - 2).toLocaleString()} × 6 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "fourTogether") {
+    const group = pickNames(4);
+    const answer = fact(n - 3) * fact(4);
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway such that ${formatNames(group)} want to sit next to each other?`,
+      answer,
+      steps: [
+        `Treat ${formatNames(group)} as one block.`,
+        `Outside objects: 1 block + ${n - 4} other people = ${n - 3} objects.`,
+        `Arrange outside objects: (${n - 3})! = ${fact(n - 3).toLocaleString()}.`,
+        `Arrange inside the block: 4! = 24.`,
+        `Total = (${n - 3})! × 4! = ${fact(n - 3).toLocaleString()} × 24 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "pairNotTogether") {
+    const [a, b] = pickNames(2);
+    const total = fact(n);
+    const together = fact(n - 1) * 2;
+    const answer = total - together;
+
+    return {
+      question: `After breaking up, in how many ways can ${n} people sit in a row if ${a} and ${b} do not want to sit next to each other?`,
+      answer,
+      steps: [
+        `Use subtraction: total arrangements minus arrangements where they are together.`,
+        `Total arrangements: ${n}! = ${total.toLocaleString()}.`,
+        `If ${a} and ${b} are together, treat them as one block: (${n - 1})! × 2! = ${fact(n - 1).toLocaleString()} × 2 = ${together.toLocaleString()}.`,
+        `Not together = ${total.toLocaleString()} - ${together.toLocaleString()} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "twoPairsTogether") {
+    const group = pickNames(4);
+    const [a, b, c, d] = group;
+    const answer = fact(n - 2) * 2 * 2;
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway such that ${a} and ${b} want to be together, and so do ${c} and ${d}?`,
+      answer,
+      steps: [
+        `Treat ${a}-${b} as one block and ${c}-${d} as another block.`,
+        `Two pairs become two blocks, so the outside objects become ${n - 2}.`,
+        `Arrange outside objects: (${n - 2})! = ${fact(n - 2).toLocaleString()}.`,
+        `Arrange the first pair inside its block: 2!. Arrange the second pair inside its block: 2!.`,
+        `Total = (${n - 2})! × 2! × 2! = ${fact(n - 2).toLocaleString()} × 2 × 2 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "threeNotAllTogether") {
+    const group = pickNames(3);
+    const total = fact(n);
+    const allTogether = fact(n - 2) * fact(3);
+    const answer = total - allTogether;
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway such that ${formatNames(group)} do not want all three of them to sit next to each other? It is okay if two of them are beside each other, but not all three together.`,
+      answer,
+      steps: [
+        `This means avoid the case where all 3 are together.`,
+        `Total arrangements: ${n}! = ${total.toLocaleString()}.`,
+        `Bad arrangements: treat ${formatNames(group)} as one block. That gives (${n - 2})! × 3! = ${fact(n - 2).toLocaleString()} × 6 = ${allTogether.toLocaleString()}.`,
+        `Allowed arrangements = total - bad = ${total.toLocaleString()} - ${allTogether.toLocaleString()} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "pairTogetherOneAvoids") {
+    const [a, b, c] = pickNames(3);
+
+    const totalPairTogether = fact(n - 1) * 2;
+    const badAdjacent = fact(n - 2) * 4;
+
+    const directUnitsArrangement = fact(n - 2);
+    const directTotalGaps = n - 1;
+    const directBadGaps = 2;
+    const directValidGaps = directTotalGaps - directBadGaps;
+
+    const answer = totalPairTogether - badAdjacent;
+
+    return {
+      question: `In how many ways can ${n} people sit in a hallway such that ${a} and ${b} are always together, and ${c} does not want to sit next to either of them?`,
+      answer,
+      steps: [
+        `<strong>Method 1: Total − What If / Bad Cases</strong>`,
+        `Force ${a} and ${b} together by treating them as one block: (${a}${b}).`,
+        `Now we arrange the (${a}${b}) block plus the other ${n - 2} people. That gives ${n - 1} units.`,
+        `Total arrangements with ${a} and ${b} together: (${n - 1})! × 2! = ${fact(n - 1).toLocaleString()} × 2 = ${totalPairTogether.toLocaleString()}.`,
+        `But this includes the bad cases where ${c} sits beside the (${a}${b}) block.`,
+        `For the bad case, combine ${c} and the (${a}${b}) block into a bigger block.`,
+        `${c} can be on the left or right side of the (${a}${b}) block: 2 choices.`,
+        `${a} and ${b} can switch inside their own block: 2 choices.`,
+        `Bad cases = (${n - 2})! × 2 × 2 = ${fact(n - 2).toLocaleString()} × 4 = ${badAdjacent.toLocaleString()}.`,
+        `Valid arrangements = total − bad = ${totalPairTogether.toLocaleString()} − ${badAdjacent.toLocaleString()} = ${answer.toLocaleString()}.`,
+
+        `<strong>Method 2: Direct Valid-Case Method</strong>`,
+        `Again, treat ${a} and ${b} as one block: (${a}${b}).`,
+        `Before placing ${c}, arrange the (${a}${b}) block plus the other ${n - 3} people.`,
+        `That gives ${n - 2} units in a row.`,
+        `Arrange those units: (${n - 2})! = ${directUnitsArrangement.toLocaleString()}.`,
+        `In a row, ${n - 2} units create ${n - 1} gaps where ${c} can be inserted.`,
+        `But ${c} cannot be placed immediately before or after the (${a}${b}) block.`,
+        `So there are ${directBadGaps} bad gaps.`,
+        `Valid gaps = ${directTotalGaps} − ${directBadGaps} = ${directValidGaps}.`,
+        `Finally, arrange ${a} and ${b} inside their block: 2!.`,
+        `Direct answer = (${n - 2})! × ${directValidGaps} × 2! = ${directUnitsArrangement.toLocaleString()} × ${directValidGaps} × 2 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+}
+
+/* =========================
+   CIRCULAR PERMUTATION
+========================= */
+
+function generateCircular(difficulty) {
+  const basicCases = [
+    "all",
+    "threeTogether"
+  ];
+
+  const mixedCases = [
+    "all",
+    "threeTogether",
+    "pairNotTogether",
+    "pairTogetherOneAvoids"
+  ];
+
+  const hardCases = [
+    "threeTogether",
+    "pairNotTogether",
+    "pairTogetherOneAvoids"
+  ];
+
+  const pool = difficulty === "basic" ? basicCases : difficulty === "hard" ? hardCases : mixedCases;
+  const type = pick(pool);
+
+  const minPeople = {
+    all: 3,
+    threeTogether: 4,
+    pairNotTogether: 4,
+    pairTogetherOneAvoids: 5
+  };
+
+  const n = rand(minPeople[type], 10);
+
+  if (type === "all") {
+    const answer = fact(n - 1);
+
+    return {
+      question: `In how many ways can ${n} friends be seated at a circular table?`,
+      answer,
+      steps: [
+        `For circular arrangements, rotations are considered the same.`,
+        `So instead of ${n}!, use (${n} - 1)!.`,
+        `Answer = (${n - 1})! = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "threeTogether") {
+    const group = pickNames(3);
+    const answer = fact(n - 3) * fact(3);
+
+    return {
+      question: `In how many ways can ${n} people be seated at a circular table when ${formatNames(group)} want to sit beside each other?`,
+      answer,
+      steps: [
+        `Treat ${formatNames(group)} as one block.`,
+        `Objects around the circle: 1 block + ${n - 3} other people = ${n - 2} objects.`,
+        `Circular arrangement of ${n - 2} objects: (${n - 2} - 1)! = (${n - 3})! = ${fact(n - 3).toLocaleString()}.`,
+        `Arrange inside the block: 3! = 6.`,
+        `Total = (${n - 3})! × 3! = ${fact(n - 3).toLocaleString()} × 6 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "pairNotTogether") {
+    const [a, b] = pickNames(2);
+    const total = fact(n - 1);
+    const together = fact(n - 2) * 2;
+    const answer = total - together;
+
+    return {
+      question: `In how many ways can ${n} people be seated at a circular table when ${a} and ${b} do not want to sit beside each other?`,
+      answer,
+      steps: [
+        `Use subtraction: total circular arrangements minus arrangements where they are together.`,
+        `Total circular arrangements: (${n - 1})! = ${total.toLocaleString()}.`,
+        `Together case: treat ${a} and ${b} as one block.`,
+        `Objects around the circle: ${n - 1}, so circular arrangements = (${n - 2})!.`,
+        `Inside the pair-block: 2!.`,
+        `Together = (${n - 2})! × 2! = ${fact(n - 2).toLocaleString()} × 2 = ${together.toLocaleString()}.`,
+        `Not together = ${total.toLocaleString()} - ${together.toLocaleString()} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "pairTogetherOneAvoids") {
+    const [a, b, c] = pickNames(3);
+
+    const totalPairTogether = fact(n - 2) * 2;
+    const badAdjacent = fact(n - 3) * 4;
+
+    const directUnitsArrangement = fact(n - 3);
+    const directTotalGaps = n - 2;
+    const directBadGaps = 2;
+    const directValidGaps = directTotalGaps - directBadGaps;
+
+    const answer = totalPairTogether - badAdjacent;
+
+    return {
+      question: `In how many ways can ${n} people sit at a circular table such that ${a} and ${b} are always together, and ${c} does not want to sit next to either of them?`,
+      answer,
+      steps: [
+        `<strong>Method 1: Total − What If / Bad Cases</strong>`,
+        `Force ${a} and ${b} together by treating them as one block: (${a}${b}).`,
+        `Now we arrange the (${a}${b}) block plus the other ${n - 2} people. That gives ${n - 1} units around a circular table.`,
+        `Circular arrangements of ${n - 1} units: (${n - 1} − 1)! = (${n - 2})! = ${fact(n - 2).toLocaleString()}.`,
+        `${a} and ${b} can switch inside the block: 2!.`,
+        `Total arrangements with ${a} and ${b} together: (${n - 2})! × 2! = ${fact(n - 2).toLocaleString()} × 2 = ${totalPairTogether.toLocaleString()}.`,
+        `But this includes the bad cases where ${c} sits beside the (${a}${b}) block.`,
+        `For the bad case, combine ${c} and the (${a}${b}) block into a bigger block.`,
+        `Now the bigger block plus the other ${n - 3} people gives ${n - 2} units around a circular table.`,
+        `Circular arrangements of those units: (${n - 2} − 1)! = (${n - 3})! = ${fact(n - 3).toLocaleString()}.`,
+        `${c} can be on either side of the (${a}${b}) block: 2 choices.`,
+        `${a} and ${b} can switch inside their own block: 2 choices.`,
+        `Bad cases = (${n - 3})! × 2 × 2 = ${fact(n - 3).toLocaleString()} × 4 = ${badAdjacent.toLocaleString()}.`,
+        `Valid arrangements = total − bad = ${totalPairTogether.toLocaleString()} − ${badAdjacent.toLocaleString()} = ${answer.toLocaleString()}.`,
+
+        `<strong>Method 2: Direct Valid-Case Method</strong>`,
+        `Again, treat ${a} and ${b} as one block: (${a}${b}).`,
+        `Before placing ${c}, arrange the (${a}${b}) block plus the other ${n - 3} people.`,
+        `That gives ${n - 2} units around a circular table.`,
+        `Circularly arrange those units: (${n - 2} − 1)! = (${n - 3})! = ${directUnitsArrangement.toLocaleString()}.`,
+        `After arranging those ${n - 2} units around the circle, there are ${n - 2} gaps where ${c} can be inserted.`,
+        `But ${c} cannot be placed on either side of the (${a}${b}) block.`,
+        `So there are ${directBadGaps} bad gaps.`,
+        `Valid gaps = ${directTotalGaps} − ${directBadGaps} = ${directValidGaps}.`,
+        `Finally, arrange ${a} and ${b} inside their block: 2!.`,
+        `Direct answer = (${n - 3})! × ${directValidGaps} × 2! = ${directUnitsArrangement.toLocaleString()} × ${directValidGaps} × 2 = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+}
+
+/* =========================
+   FCP
+========================= */
+
+function generateFCP(difficulty) {
+  const basic = [
+    {
+      build: () => {
+        const shirts = rand(3, 8);
+        const pants = rand(2, 6);
+        const shoes = rand(2, 5);
+        const answer = shirts * pants * shoes;
+
+        return {
+          question: `A student has ${shirts} shirts, ${pants} pants, and ${shoes} pairs of shoes. How many outfits can be formed?`,
+          answer,
+          steps: [
+            `This is Fundamental Counting Principle.`,
+            `Multiply the number of choices for each independent decision.`,
+            `Outfits = ${shirts} × ${pants} × ${shoes} = ${answer.toLocaleString()}.`
+          ]
+        };
+      }
+    },
+    {
+      build: () => {
+        const letters = rand(3, 8);
+        const digits = rand(4, 10);
+        const symbols = rand(2, 5);
+        const answer = letters * digits * symbols;
+
+        return {
+          question: `A code has 1 letter, 1 digit, and 1 symbol. There are ${letters} possible letters, ${digits} possible digits, and ${symbols} possible symbols. How many codes are possible?`,
+          answer,
+          steps: [
+            `There are 3 independent slots.`,
+            `Multiply the choices for each slot.`,
+            `Total codes = ${letters} × ${digits} × ${symbols} = ${answer.toLocaleString()}.`
+          ]
+        };
+      }
+    }
+  ];
+
+  const hard = [
+    {
+      build: () => {
+        const blouses = rand(5, 9);
+        const skirts = rand(4, 7);
+        const sandals = rand(2, 5);
+        const badBlouses = rand(1, blouses - 2);
+
+        const total = blouses * skirts * sandals;
+        const invalid = badBlouses * sandals;
+        const answer = total - invalid;
+
+        return {
+          question: `Jz has ${blouses} blouses, ${skirts} skirts, and ${sandals} sandals. Exactly 1 skirt is black. ${badBlouses} blouses cannot be worn with the black skirt. How many outfits are possible?`,
+          answer,
+          steps: [
+            `Start with all possible outfits.`,
+            `All outfits = ${blouses} × ${skirts} × ${sandals} = ${total.toLocaleString()}.`,
+            `Invalid outfits use one of the ${badBlouses} restricted blouses, the black skirt, and any of the ${sandals} sandals.`,
+            `Invalid = ${badBlouses} × 1 × ${sandals} = ${invalid.toLocaleString()}.`,
+            `Valid outfits = total - invalid = ${total.toLocaleString()} - ${invalid.toLocaleString()} = ${answer.toLocaleString()}.`
+          ]
+        };
+      }
+    },
+    {
+      build: () => {
+        const letters = 26;
+        const digits = 10;
+        const answer = letters * letters * digits * digits;
+
+        return {
+          question: `A code has 2 uppercase letters followed by 2 digits. Repetition is allowed. How many codes are possible?`,
+          answer,
+          steps: [
+            `There are 4 slots: letter, letter, digit, digit.`,
+            `Repetition is allowed, so each letter slot has 26 choices and each digit slot has 10 choices.`,
+            `Total = 26 × 26 × 10 × 10 = ${answer.toLocaleString()}.`
+          ]
+        };
+      }
+    },
+    {
+      build: () => {
+        const letters = 26;
+        const digits = 10;
+        const noOdd = 5;
+
+        const total = letters * letters * digits * digits;
+        const bad = letters * letters * noOdd * noOdd;
+        const answer = total - bad;
+
+        return {
+          question: `A code has 2 uppercase letters followed by 2 digits. Repetition is allowed. How many codes have at least one odd digit?`,
+          answer,
+          steps: [
+            `Use subtraction because the phrase is “at least one odd digit.”`,
+            `Total codes = 26 × 26 × 10 × 10 = ${total.toLocaleString()}.`,
+            `Bad case: no odd digit. That means both digits must be even: 0, 2, 4, 6, 8. There are 5 choices per digit.`,
+            `Bad codes = 26 × 26 × 5 × 5 = ${bad.toLocaleString()}.`,
+            `At least one odd digit = total - bad = ${total.toLocaleString()} - ${bad.toLocaleString()} = ${answer.toLocaleString()}.`
+          ]
+        };
+      }
+    }
+  ];
+
+  const pool = difficulty === "basic" ? basic : difficulty === "hard" ? hard : [...basic, ...hard];
+  return pick(pool).build();
+}
+
+/* =========================
+   COMBINATION
+========================= */
+
+function generateCombination(difficulty) {
+  const basicCases = [
+    "simple"
+  ];
+
+  const mixedCases = [
+    "simple",
+    "committeeExcludeBoth",
+    "committeeIncludeOne"
+  ];
+
+  const hardCases = [
+    "committeeExcludeBoth",
+    "committeeIncludeOne",
+    "atLeastOne"
+  ];
+
+  const pool = difficulty === "basic" ? basicCases : difficulty === "hard" ? hardCases : mixedCases;
+  const type = pick(pool);
+
+  if (type === "simple") {
+    const n = rand(6, 14);
+    const r = rand(2, Math.min(5, n - 1));
+    const answer = comb(n, r);
+
+    return {
+      question: `From ${n} students, how many committees of ${r} can be formed?`,
+      answer,
+      steps: [
+        `This is a combination because order does not matter.`,
+        `Use nCr = n! / [r!(n-r)!].`,
+        `${n}C${r} = ${n}! / [${r}!(${n - r})!] = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "committeeExcludeBoth") {
+    const n = rand(8, 14);
+    const r = rand(3, Math.min(6, n - 1));
+    const [a, b] = pickNames(2);
+
+    const total = comb(n, r);
+    const bad = comb(n - 2, r - 2);
+    const answer = total - bad;
+
+    return {
+      question: `From ${n} scholars, how many committees of ${r} can be formed if ${a} and ${b} cannot both be selected?`,
+      answer,
+      steps: [
+        `Use subtraction: total committees minus committees where both ${a} and ${b} are selected.`,
+        `Total committees = ${n}C${r} = ${total.toLocaleString()}.`,
+        `Bad case: ${a} and ${b} are already chosen, so choose the remaining ${r - 2} members from the other ${n - 2} scholars.`,
+        `Bad = ${n - 2}C${r - 2} = ${bad.toLocaleString()}.`,
+        `Allowed = ${total.toLocaleString()} - ${bad.toLocaleString()} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "committeeIncludeOne") {
+    const n = rand(8, 14);
+    const r = rand(3, Math.min(6, n - 1));
+    const [a, b] = pickNames(2);
+
+    const chooseAOnly = comb(n - 2, r - 1);
+    const chooseBOnly = comb(n - 2, r - 1);
+    const answer = chooseAOnly + chooseBOnly;
+
+    return {
+      question: `From ${n} scholars, how many committees of ${r} can be formed if exactly one of ${a} or ${b} must be selected?`,
+      answer,
+      steps: [
+        `Exactly one means ${a} only or ${b} only.`,
+        `Case 1: Choose ${a}, do not choose ${b}. Choose the remaining ${r - 1} members from the other ${n - 2} scholars.`,
+        `Case 1 = ${n - 2}C${r - 1} = ${chooseAOnly.toLocaleString()}.`,
+        `Case 2: Choose ${b}, do not choose ${a}.`,
+        `Case 2 = ${n - 2}C${r - 1} = ${chooseBOnly.toLocaleString()}.`,
+        `Total = ${chooseAOnly.toLocaleString()} + ${chooseBOnly.toLocaleString()} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  if (type === "atLeastOne") {
+    const n = rand(9, 15);
+    const r = rand(3, Math.min(6, n - 1));
+    const special = rand(2, 4);
+
+    const total = comb(n, r);
+    const none = comb(n - special, r);
+    const answer = total - none;
+
+    return {
+      question: `From ${n} students, ${special} are officers. How many committees of ${r} can be formed with at least one officer?`,
+      answer,
+      steps: [
+        `Use subtraction because the phrase is “at least one.”`,
+        `Total committees = ${n}C${r} = ${total.toLocaleString()}.`,
+        `Bad case: no officer is chosen. Choose all ${r} members from the ${n - special} non-officers.`,
+        `Bad = ${n - special}C${r} = ${none.toLocaleString()}.`,
+        `At least one officer = ${total.toLocaleString()} - ${none.toLocaleString()} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+}
+
+/* =========================
+   QUICK DRILL
+========================= */
+
+function generateQuick(difficulty) {
+  const type = pick(["P", "C"]);
+
+  let n;
+  let r;
+
+  if (difficulty === "basic") {
+    n = rand(5, 8);
+    r = rand(2, Math.min(4, n));
+  } else if (difficulty === "hard") {
+    n = rand(9, 12);
+    r = rand(3, Math.min(6, n));
+  } else {
+    n = rand(6, 10);
+    r = rand(2, Math.min(5, n));
+  }
+
+  if (type === "P") {
+    const answer = perm(n, r);
+
+    return {
+      question: `Solve: ${n}P${r}`,
+      answer,
+      steps: [
+        `Permutation means order matters.`,
+        `Use nPr = n! / (n-r)!.`,
+        `${n}P${r} = ${n}! / (${n} - ${r})! = ${n}! / ${n - r}!.`,
+        `${n}P${r} = ${answer.toLocaleString()}.`
+      ]
+    };
+  }
+
+  const answer = comb(n, r);
+
+  return {
+    question: `Solve: ${n}C${r}`,
+    answer,
+    steps: [
+      `Combination means order does not matter.`,
+      `Use nCr = n! / [r!(n-r)!].`,
+      `${n}C${r} = ${n}! / [${r}!(${n - r})!].`,
+      `${n}C${r} = ${answer.toLocaleString()}.`
+    ]
+  };
+}
+
+/* =========================
+   MATH HELPERS
+========================= */
+
+function fact(n) {
+  if (n < 0) return 0;
+
+  let product = 1;
+
+  for (let i = 2; i <= n; i++) {
+    product *= i;
+  }
+
+  return product;
+}
+
+function perm(n, r) {
+  if (r > n) return 0;
+  return fact(n) / fact(n - r);
+}
+
+function comb(n, r) {
+  if (r > n) return 0;
+  return fact(n) / (fact(r) * fact(n - r));
+}
+
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function pickNames(count) {
+  const copy = [...names];
+  const chosen = [];
+
+  while (chosen.length < count && copy.length > 0) {
+    const index = Math.floor(Math.random() * copy.length);
+    chosen.push(copy.splice(index, 1)[0]);
+  }
+
+  return chosen;
+}
+
+function formatNames(list) {
+  if (list.length === 1) return list[0];
+  if (list.length === 2) return `${list[0]} and ${list[1]}`;
+
+  return `${list.slice(0, -1).join(", ")}, and ${list[list.length - 1]}`;
+}
+  </script>
+</body>
+</html>
