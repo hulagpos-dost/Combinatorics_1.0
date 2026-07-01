@@ -1904,14 +1904,14 @@ function generateCombination(difficulty) {
     const answer = total - none;
 
     return {
-      question: `From ${n} students, ${special} are officers. How many committees of ${r} can be formed with at least one officer?`,
+      question: `From ${n} students, ${special} are Seniors. How many committees of ${r} can be formed with at least one senior?`,
       answer,
       steps: [
         `Use subtraction because the phrase is “at least one.”`,
         `Total committees = ${n}C${r} = ${total.toLocaleString()}.`,
-        `Bad case: no officer is chosen. Choose all ${r} members from the ${n - special} non-officers.`,
+        `Bad case: no senior is chosen. Choose all ${r} members from the ${n - special} non-seniors.`,
         `Bad = ${n - special}C${r} = ${none.toLocaleString()}.`,
-        `At least one officer = ${total.toLocaleString()} - ${none.toLocaleString()} = ${answer.toLocaleString()}.`
+        `At least one senior = ${total.toLocaleString()} - ${none.toLocaleString()} = ${answer.toLocaleString()}.`
       ]
     };
   }
